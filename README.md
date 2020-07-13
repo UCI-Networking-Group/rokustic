@@ -1,6 +1,3 @@
-# Rokustic release preparation
-This repository is for preparing Rokustic for release. **It should be considered deprecated/stale once Rokustic has been released on our public GitHub.**
-
 # Rokustic
 This repository contains the source code for the Rokustic tool developed for, and used in, the paper ["The TV is Smart and Full of Trackers: Measuring Smart TV Advertising and Tracking"](https://petsymposium.org/2020/files/papers/issue2/popets-2020-0021.pdf). Rokustic enables automated installation and interaction with Roku apps (channels) while logging the Roku device's network traffic. For a more detailed description of Rokustic (and Firetastic, Rokustic's sibling tool for Amazon Fire TV), please refer to the aforementioned paper and [the project website](https://athinagroup.eng.uci.edu/projects/smarttv/).
 
