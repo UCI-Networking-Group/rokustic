@@ -35,7 +35,7 @@ If you select this option, you will be prompted for a path to a file that specif
 Rokustic will ignore lines starting with a pound sign (`#`), enabling you to add comments to these app list files.
 
 ## Automatically interact with Roku apps while logging network traffic
-If you select this option, you will be prompted for the name of the network interface that is to be the target of the packet capture. This will typically be `wlan0` if you run this program on a Raspberry Pi that acts as an access point that the Roku connects to.
+If you select this option, you will be prompted for the name of the network interface that is to be the target of the packet capture. This will typically be `wlan0` if you run Rokustic on a Raspberry Pi that acts as an access point that the Roku connects to.
 
 After specifying the network interface, you will also be prompted for an output directory. The network traces captured during interaction with each app will be written to this output directory. There will be one network trace per app. The naming convention used for the network trace files is `app-<ID>.pcap` where `<ID>` is the ID of the app that was being automatically interacted with while the network trace was captured.
 
