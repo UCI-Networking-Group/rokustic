@@ -1,0 +1,23 @@
+# Ignore all IntelliJ project files.
+.idea
+# Ignore ItelliJ output
+out/
+
+# ========== Gradle ==========
+# (combination of the JetBrains gitignore and Gradle gitignore)
+.idea/**/gradle.xml
+.idea/**/libraries
+.gradle
+/build/
+# Ignore Gradle GUI config
+gradle-app.setting
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+# Cache of project
+.gradletasknamecache
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+# ============================
+
+# ignore DS_Store files
+.DS_Store

@@ -1,0 +1,59 @@
+/*
+ * Copyright 2020 Janus Varmarken and the UCI Networking Group
+ * <https://athinagroup.eng.uci.edu>.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'edu.uci.eng.athinagroup.smarttv'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+mainClassName = 'edu.uci.eng.athinagroup.smarttv.rokustic.Main'
+
+run {
+    // Standard input stream set to empty, must explicitly point to std in.
+    standardInput = System.in
+}
+
+repositories {
+    mavenCentral()
+    // Tool for packaging a github repo to make it possible to import it as a dependency
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    // HTTP library for Java.
+    implementation 'com.mashape.unirest:unirest-java:1.4.9'
+
+    // xml parser
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.8'
+
+    // SDDP client library provided by github user vmichalak
+    implementation 'com.github.vmichalak:ssdp-client:0a6d554254c45b74e780b1281a34d071618795b7'
+
+    // Java tcpdump wrapper and packet+pcap parser
+    implementation 'org.pcap4j:pcap4j-core:2.0.0-alpha.2'
+    implementation 'org.pcap4j:pcap4j-packetfactory-static:2.0.0-alpha.2'
+    // pcap4j logging dependencies
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'org.slf4j:slf4j-simple:1.7.25'
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
