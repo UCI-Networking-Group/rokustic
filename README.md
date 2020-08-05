@@ -39,6 +39,51 @@ If you select this option, you will be prompted for the name of the network inte
 
 After specifying the network interface, you will also be prompted for an output directory. The network traces captured during interaction with each app will be written to this output directory. There will be one network trace per app. The naming convention used for the network trace files is `app-<ID>.pcap` where `<ID>` is the ID of the app that was being automatically interacted with while the network trace was captured.
 
+# Scripts
+The `scripts` directory contains scripts that are related to Rokustic, but which are to be run as separate, standalone components.
+
+## Crawling the Roku Channel Store for Available Channels
+The [`roku_channelstore_crawler.py`](/scripts/roku_channelstore_crawler.py) determines all currently available (free) Roku apps by crawling the [Roku Channel Store](https://channelstore.roku.com/). The script is written in Python 3. It expects a single argument, which specifies where to write its output:
+
+```
+$ python3 roku_channelstore_crawler.py /home/rokustic/channelstore_crawl.csv
+```
+
+The script outputs a CSV file that maps each channel to its category/categories (a Roku channel can be part of multiple channel categories). The columns in the output CSV are: `[category_id, category_name, category_type, chanenl_id, channel_name, channel_price]`. Most columns should be self-explanatory. The `category_type` specifies how the category is maintained by Roku. Known possible values (as of August 2020) are `curated` and `tag`. A few lines from an August 2020 crawl are provided below as an example output:
+```
+category_id,category_name,category_type,chanenl_id,channel_name,channel_price
+F73EBEF3-F4A9-484F-9D33-A1420107E170,Featured,curated,140474,AT&T TV,0
+F73EBEF3-F4A9-484F-9D33-A1420107E170,Featured,curated,32614,HappyKids.tv,0
+F73EBEF3-F4A9-484F-9D33-A1420107E170,Featured,curated,551012,Apple TV,0
+F73EBEF3-F4A9-484F-9D33-A1420107E170,Featured,curated,71845,NewsON,0
+F73EBEF3-F4A9-484F-9D33-A1420107E170,Featured,curated,251088,STIRR - the new free TV,0
+...
+D673A62A-2891-4683-BB02-A4DC00E26BC9,4K Editor's Picks,curated,12,Netflix,0
+D673A62A-2891-4683-BB02-A4DC00E26BC9,4K Editor's Picks,curated,551012,Apple TV,0
+D673A62A-2891-4683-BB02-A4DC00E26BC9,4K Editor's Picks,curated,291097,Disney Plus,0
+D673A62A-2891-4683-BB02-A4DC00E26BC9,4K Editor's Picks,curated,43465,fuboTV Watch Live Sports & TV,0
+D673A62A-2891-4683-BB02-A4DC00E26BC9,4K Editor's Picks,curated,61657,CuriosityStream,0
+...
+52E61EAB-1170-4E32-AA15-A6A200EFD57A,New & Notable,curated,592506,Peloton - at home fitness,0
+52E61EAB-1170-4E32-AA15-A6A200EFD57A,New & Notable,curated,291097,Disney Plus,0
+52E61EAB-1170-4E32-AA15-A6A200EFD57A,New & Notable,curated,551012,Apple TV,0
+52E61EAB-1170-4E32-AA15-A6A200EFD57A,New & Notable,curated,1508,NBA,0
+52E61EAB-1170-4E32-AA15-A6A200EFD57A,New & Notable,curated,14,MLB,0
+...
+5E976DF9-31F2-461F-BC78-17AB6B5132C8,Top Free Movies & TV,curated,151908,The Roku Channel,0
+5E976DF9-31F2-461F-BC78-17AB6B5132C8,Top Free Movies & TV,curated,2595,Crunchyroll,0
+5E976DF9-31F2-461F-BC78-17AB6B5132C8,Top Free Movies & TV,curated,13535,Plex - Stream for Free,0
+5E976DF9-31F2-461F-BC78-17AB6B5132C8,Top Free Movies & TV,curated,74519,Pluto TV - It's Free TV,0
+5E976DF9-31F2-461F-BC78-17AB6B5132C8,Top Free Movies & TV,curated,41468,Tubi - Free Movies & TV,0
+...
+58F8F920-F0DA-43B8-B39F-F05544BBDE5C,TV en Español,tag,580590,IENTC TV,0
+58F8F920-F0DA-43B8-B39F-F05544BBDE5C,TV en Español,tag,574190,Televisión Satelital,$18.99
+58F8F920-F0DA-43B8-B39F-F05544BBDE5C,TV en Español,tag,574823,Canales Premium en Vivo,$18.99
+58F8F920-F0DA-43B8-B39F-F05544BBDE5C,TV en Español,tag,194548,Telemicro,0
+58F8F920-F0DA-43B8-B39F-F05544BBDE5C,TV en Español,tag,596854,Talanga Vision,0
+```
+
+
 # Dependencies
 Rokustic uses [Pcap4J](https://github.com/kaitoy/pcap4j) to capture network traffic and thus inherits [the platform requirements of Pcap4J](https://github.com/kaitoy/pcap4j#how-to-use) (in particular, the availability of a pcap native library). Gradle (Maven) will handle inclusion of the Pcap4J library itself (and additional libraries used by Rokustic) automatically when you build/run Rokustic using the provided Gradle Wrapper.
 
