@@ -21,6 +21,20 @@ Rokustic is designed to run on a (UNIX-based) machine that acts as a wireless ac
 
 ![A diagram depicting the hardware setup we use for Rokustic. A Raspberry Pi 3 Model B is set up as a wireless access point and gateway. The Roku is connected to this wireless access point.](https://github.com/UCI-Networking-Group/rokustic/blob/master/images/rokustic-hardware-setup.png "Rokustic hardware setup")
 
+## Raspberry Pi Setup
+To configure a Raspberry Pi 3 Model B (or any other model with both a wired and a wireless network interface) to run Rokustic, follow the instructions below.
+
+- [First set up the Raspberry Pi as a wireless router (AP and gateway with DHCP server and NAT)](https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md).
+- [(Optional) Perform basic security configuration.](https://www.raspberrypi.org/documentation/configuration/security.md)
+- [(Optional) Enable SSH for remote access to the Pi.](https://www.raspberrypi.org/documentation/remote-access/ssh/)
+
+Finally, you should make sure that routing is set up correctly on the Raspberry Pi. If set up using the tutorials linked above, the Raspberry Pi's `eth0` should become the default gateway (in the view of the Pi itself). Use `$ ip route show` to verify the default gateway. You should see an output line similar to `default via A.B.C.D dev eth0 ...` where `A.B.C.D` is the IP address of your Pi's `eth0` interface.
+
+As Rokustic uses SSDP to discover Rokus connected to the wireless network hosted by the Pi, you also need to add a routing entry that makes the Pi send SSDP queries out on its `wlan0` interface rather than its `eth0` interface:
+- Add the route using `$ sudo ip route add 239.255.255.250 dev wlan0` (239.255.255.250 is the multicast address used for the SSDP queries).
+- Then verify it using `$ ip route show`. You should see a line in the output similar to `239.255.255.250 dev wlan0 scope link`. 
+
+
 # Usage
 You run Rokustic using the command `sudo ./gradlew run` from the root of this repository (note: `sudo` is needed as the program starts and stops a packet capture behind the scenes). Rokustic will first perform an SSDP scan to discover Rokus on the local network, and then prompt you to select your target Roku. Next, you will be asked if you would like to install Roku apps, or perform automated interaction with the set of apps currently installed on the Roku device.
 
