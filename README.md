@@ -21,7 +21,7 @@ Rokustic is designed to run on a (UNIX-based) machine that acts as a wireless ac
 
 ![A diagram depicting the hardware setup we use for Rokustic. A Raspberry Pi 3 Model B is set up as a wireless access point and gateway. The Roku is connected to this wireless access point.](https://github.com/UCI-Networking-Group/rokustic/blob/master/images/rokustic-hardware-setup.png "Rokustic hardware setup")
 
-## Raspberry Pi Setup
+## Raspberry Pi setup
 To configure a Raspberry Pi 3 Model B (or any other model with both a wired and a wireless network interface) to run Rokustic, follow the instructions below.
 
 - [First set up the Raspberry Pi as a wireless router (AP and gateway with DHCP server and NAT)](https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md).
@@ -54,10 +54,12 @@ If you select this option, you will be prompted for the name of the network inte
 After specifying the network interface, you will also be prompted for an output directory. The network traces captured during interaction with each app will be written to this output directory. There will be one network trace per app. The naming convention used for the network trace files is `app-<ID>.pcap` where `<ID>` is the ID of the app that was being automatically interacted with while the network trace was captured.
 
 # Scripts
-The `scripts` directory contains scripts that are related to Rokustic, but which are to be run as separate, standalone components.
+The `scripts` directory contains scripts that are related to Rokustic, but which are to be run as separate, standalone components. All scripts are written in Python 3. Dependencies (can be installed using `pip`): `requests`, `unicodecsv`.
 
-## Crawling the Roku Channel Store for Available Channels
-The [`roku_channelstore_crawler.py`](/scripts/roku_channelstore_crawler.py) determines all currently available (free) Roku apps by crawling the [Roku Channel Store](https://channelstore.roku.com/). The script is written in Python 3. It expects a single argument, which specifies where to write its output:
+The Roku Channel Store crawlers were written for version 6 of the API backing the Roku Channel Store and were last verified as operational in early August 2020. Note that the scripts target the US version of the Roku Channel Store.
+
+## Crawling the Roku Channel Store for available channels
+The [`roku_channelstore_crawler.py`](/scripts/roku_channelstore_crawler.py) script determines all currently available (free) Roku apps by crawling the [Roku Channel Store](https://channelstore.roku.com/). It expects a single argument, which specifies where to write its output:
 
 ```
 $ python3 roku_channelstore_crawler.py /home/rokustic/channelstore_crawl.csv
@@ -97,6 +99,56 @@ D673A62A-2891-4683-BB02-A4DC00E26BC9,4K Editor's Picks,curated,61657,CuriositySt
 58F8F920-F0DA-43B8-B39F-F05544BBDE5C,TV en Español,tag,596854,Talanga Vision,0
 ```
 
+## Crawling the Roku Channel Store for channel details (metadata)
+The [`roku_channel_details_crawler.py`](/scripts/roku_channel_details_crawler.py) script crawls the Roku Channel Store to obtain the complete channel details (metadata) for all channels in a user-specified set of Roku channels. The script expects two positional arguments, and also allows for an additional optional argument:
+```
+$ python3 roku_channel_details_crawler.py -h
+usage: roku_channel_details_crawler.py [-h] [--csv CSV]
+                                       channel_ids_file out_json_file
+
+Crawls the Roku Channel Store for channel details for a set of channels.
+
+positional arguments:
+  channel_ids_file  A file that defines the set of channels to fetch channel
+                    details for. The format should be one channel ID (integer)
+                    per line. Lines starting with '#' are interpreted as
+                    comments and are ignored.
+  out_json_file     Output JSON file where channel details are to be written.
+
+optional arguments:
+  -h, --help        show this help message and exit
+  --csv CSV         If a path to a .csv file is provided for this argument, a
+                    subset of the full channel details (the JSON) will be
+                    written to this csv file (currently only rating and
+                    price).
+```
+
+The JSON output is formatted as a single root object with a key/value entry for each (valid) channel ID. The key is the channel ID, and its associated value is another JSON object which holds all metadata for that respective channel:
+```
+{
+  "12": {
+    ... object describing the metadata of app with id=12 ...
+  },
+  "13": {
+    ... object describing the metadata of app with id=13 ...
+  },
+  "14": {
+    ... object describing the metadata of app with id=14 ...
+  }
+  ...
+}
+```
+The metadata is structured in exactly the same way as when it was originally returned from the API backing the Roku Channel Store. To the best of our knowledge, Roku has not made a description of this JSON structure publicly available, but most of the key names do a good job at describing their associated value.
+
+The resulting JSON file can be very large, which may make it difficult to work with/process: for example, retrieving channel metadata for all available channels as of August 11th, 2020 (14,196 channels) resulted in a 122 MB JSON file. If you are only interested in ranking the channels according to their popularity and/or price, you can use the optional `--csv your_csv_file.csv` to produce a CSV file (which will be output alongside the main JSON file) with the following format:
+```
+channel_id,rating,star_rating,star_rating_count,price_as_number
+12,76.2225,76.2225,3707863,0
+13,74.3087,74.3087,765942,0
+14,76.7029,76.7029,45032,0
+...
+```
+You can then import this CSV file into spreadsheet software such as Microsoft Excel or an SQL database to enable easy sorting by the different rating/price metrics. The CSV file will be much smaller as it only includes a very small subset of all available metadata. For comparison, the CSV file corresponding to the 122 MB JSON file, mentioned earlier, is 367 KB.
 
 # Dependencies
 Rokustic uses [Pcap4J](https://github.com/kaitoy/pcap4j) to capture network traffic and thus inherits [the platform requirements of Pcap4J](https://github.com/kaitoy/pcap4j#how-to-use) (in particular, the availability of a pcap native library). Gradle (Maven) will handle inclusion of the Pcap4J library itself (and additional libraries used by Rokustic) automatically when you build/run Rokustic using the provided Gradle Wrapper.
