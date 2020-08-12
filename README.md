@@ -16,6 +16,9 @@ If you create a publication (including web pages, papers published by a third pa
 ```
 We also encourage you to provide us (smarttv.uci@gmail.com) with a link to your publication. We use this information in reports to our funding agencies.
 
+# Dependencies
+Rokustic uses [Pcap4J](https://github.com/kaitoy/pcap4j) to capture network traffic and thus inherits [the platform requirements of Pcap4J](https://github.com/kaitoy/pcap4j#how-to-use) (in particular, the availability of a pcap native library). Gradle (Maven) will handle inclusion of the Pcap4J library itself (and additional libraries used by Rokustic) automatically when you build/run Rokustic using the provided Gradle Wrapper.
+
 # Hardware setup
 Rokustic is designed to run on a (UNIX-based) machine that acts as a wireless access point (AP) and a gateway for devices connected to this AP. To eliminate the need for filtering the collected network traces (by IP of the Roku device), we recommend that you do *not* connect any other devices than the Roku itself to this AP. To start/stop Rokustic, set up the machine to enable SSH login on its wired interface. When you start Rokustic and tell it to log traffic on the wireless interface (to which the Roku is connected), any management (SSH) traffic on the wired interface will not become part of the collected network traces. We use a Raspberry Pi 3 Model B as the AP/gateway (depicted in the figure below), but any (UNIX-based) machine with a wireless and a wired interface should suffice.
 
@@ -149,9 +152,6 @@ channel_id,rating,star_rating,star_rating_count,price_as_number
 ...
 ```
 You can then import this CSV file into spreadsheet software such as Microsoft Excel or an SQL database to enable easy sorting by the different rating/price metrics. The CSV file will be much smaller as it only includes a very small subset of all available metadata. For comparison, the CSV file corresponding to the 122 MB JSON file, mentioned earlier, is 367 KB.
-
-# Dependencies
-Rokustic uses [Pcap4J](https://github.com/kaitoy/pcap4j) to capture network traffic and thus inherits [the platform requirements of Pcap4J](https://github.com/kaitoy/pcap4j#how-to-use) (in particular, the availability of a pcap native library). Gradle (Maven) will handle inclusion of the Pcap4J library itself (and additional libraries used by Rokustic) automatically when you build/run Rokustic using the provided Gradle Wrapper.
 
 # License
 Rokustic is licensed under [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
